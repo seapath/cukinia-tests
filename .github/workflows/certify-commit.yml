@@ -1,0 +1,24 @@
+# Copyright (C) 2023, RTE (http://www.rte-france.com)
+# SPDX-License-Identifier: Apache-2.0
+# This action test if the last commit of the pull request have been tested on
+# seapath/ansible
+
+name: Certify commit
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  certify-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - run : git clone -b debian-main https://github.com/seapath/ansible.git;
+              cd ansible;
+              git submodule update --init -f;
+              cd src/cukinia-tests/;
+              PR_SHA=${{ github.event.pull_request.head.sha }};
+              git log --format=format:%H | grep $PR_SHA;
+#PR_SHA is the hash of the last commit of the Pull request
+
+
