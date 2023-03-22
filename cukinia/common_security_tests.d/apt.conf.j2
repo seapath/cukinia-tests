@@ -1,7 +1,7 @@
 cukinia_log "$(_colorize yellow "--- check apt configuration ---")"
 
 OFFICIAL_REPOS="({{
-    apt_proxy
+    apt_repo
     | default('artifacts.elastic.co|deb.debian.org|download.docker.com|ftp.fr.debian.org|security.debian.org')
 }})"
 
