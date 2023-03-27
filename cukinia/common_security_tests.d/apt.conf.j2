@@ -1,14 +1,18 @@
 cukinia_log "$(_colorize yellow "--- check apt configuration ---")"
 
-OFFICIAL_REPOS="({{
-    apt_repo
-    | default('artifacts.elastic.co|deb.debian.org|download.docker.com|ftp.fr.debian.org|security.debian.org')
-}})"
 
-# Awk exptression extract the repositorie's hostname
-# deb http://ftp.fr.debian.org/debian bullseye main contrib non-free --> ftp.fr.debian.org
-as "SEAPATH-00197 - Only official apt repositories configured" \
-    cukinia_test "$(awk -F / -- '/^[^#]/{print $3;}' /etc/apt/sources.list /etc/apt/sources.list.d/* | grep -Ev ${OFFICIAL_REPOS})" = ""
+{% if apt_repo is defined %}
+as "SEAPATH-00197 - Only wanted apt repositories configured: only use sources.list" \
+    cukinia_test -z "$(ls /etc/apt/sources.list.d/)"
+
+as "SEAPATH-00197 - Only wanted apt repositories configured: do not add other repositories" \
+    cukinia_test cat /etc/apt/sources.list |wc -l -eq {{ apt_repo | length }}
+
+{% for repo in apt_repo %}
+as "SEAPATH-00197 - Only official apt repositories configured: {{ repo }}" \
+    cukinia_cmd  grep -Eq "^deb {{ repo }}$" /etc/apt/sources.list
+{% endfor %}
+{% endif %}
 
 # These packages are essential to seapath
 ESSENTIAL_PACKAGES_SEAPATH="amd64-microcode|\
