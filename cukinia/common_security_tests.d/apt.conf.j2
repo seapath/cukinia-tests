@@ -6,7 +6,7 @@ as "SEAPATH-00197 - Only wanted apt repositories configured: only use sources.li
     cukinia_test -z "$(ls /etc/apt/sources.list.d/)"
 
 as "SEAPATH-00197 - Only wanted apt repositories configured: do not add other repositories" \
-    cukinia_test cat /etc/apt/sources.list |wc -l -eq {{ apt_repo | length }}
+    cukinia_test $(cat /etc/apt/sources.list |wc -l) -eq {{ apt_repo | length }}
 
 {% for repo in apt_repo %}
 as "SEAPATH-00197 - Only official apt repositories configured: {{ repo }}" \
