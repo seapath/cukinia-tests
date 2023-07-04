@@ -5,7 +5,7 @@ cukinia_log "$(_colorize yellow "--- check /etc/shadow ---")"
 
 unlocked_users=" \
     root \
-    virtu \
+    {{ admin_user }} \
 "
 
 locked_users=" \
@@ -41,6 +41,7 @@ locked_users=" \
     libvirt-qemu \
     systemd-coredump \
     _chrony \
+    {{ livemigration_user }} \
 "
 
 ret=0
