@@ -174,7 +174,7 @@ $ESSENTIAL_PACKAGES_DEBOOTSTRAP\
 UNRECOGNIZED_PACKAGES=""
 
 for package in $(apt list --installed 2>/dev/null | awk -F '/' 'NR>1 {print $1}'); do
-    if ! apt-cache rdepends --recurse "$package" | grep -Eq "^(  )?${ESSENTIAL_PACKAGES}$"; then
+    if ! apt-cache rdepends --installed --recurse "$package" | grep -Eq "^(  )?${ESSENTIAL_PACKAGES}$"; then
         UNRECOGNIZED_PACKAGES="$UNRECOGNIZED_PACKAGES $package"
     fi
 done
