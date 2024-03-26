@@ -32,7 +32,9 @@ passwd=" \
     ansible \
     _chrony \
     {{ admin_user }} \
+{% if livemigration_user is defined %}
     {{ livemigration_user }} \
+{% endif %}
     libvirt \
 {% if ansible_distribution == 'Debian' and ansible_distribution_version | int < 12 %}
     gnats \
