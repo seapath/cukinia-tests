@@ -44,7 +44,9 @@ locked_users=" \
     libvirt-qemu \
     systemd-coredump \
     _chrony \
+{% if livemigration_user is defined %}
     {{ livemigration_user }} \
+{% endif %}
 "
 
 ret=0
