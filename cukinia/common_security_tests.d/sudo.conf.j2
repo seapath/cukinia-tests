@@ -24,11 +24,17 @@ as "SEAPATH-00148 - sudoers files include directive env_reset " \
 
 as "SEAPATH-00149 - sudo commands don't target privileged user " \
     not cukinia_cmd grep -q -E '.*\(root\).*' $SUDOERS_FILES
-
 as "SEAPATH-00150 - all commands require authentication" \
     not cukinia_cmd grep -q '^(?!#|%privileged).*NOPASSWD' $SUDOERS_FILES
+
+CMD_WITH_EXEC=$(
+    grep EXEC $SUDOERS_FILES |
+    grep -Ev '{{ ansible_user }}|{{ admin_user }}'
+)
+# EXEC is mandatory for ansible. Currently admin user has all rigths
 as "SEAPATH-00152 - EXEC option is not used" \
-    not cukinia_cmd grep -q "^(?!#|%privileged).* EXEC " $SUDOERS_FILES
+    cukinia_test -n $CMD_WITH_EXEC
+
 as "SEAPATH-00153 - rules are not defined by negation" \
     not cukinia_cmd grep -q "^[^#].*!\/" "$f" $SUDOERS_FILES
 
