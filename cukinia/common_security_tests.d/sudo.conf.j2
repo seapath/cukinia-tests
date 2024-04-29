@@ -35,7 +35,7 @@ as "SEAPATH-00153 - rules are not defined by negation" \
 CMD_WITHOUT_ARGS=$(
   grep -h "ALL.*=.*/" $SUDOERS_FILES |
   grep -v '/[^[:space:]]*\>[[:space:]]\+.*' |
-  grep -v '^ansible'
+  grep -v '^{{ ansible_user }}'
 )
 # The first line matches all lines where specific commands are defined.
 # The second line match the absolute path of the command (it begin with /)
