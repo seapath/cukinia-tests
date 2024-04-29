@@ -44,6 +44,17 @@ CMD_WITHOUT_ARGS=$(
 as "SEAPATH-00154 - sudo commands always specify arguments" \
     cukinia_test -n $CMD_WITHOUT_ARGS
 
+USER_ACCESS_ALL=$(
+    grep -h "ALL.*=.*ALL" $SUDOERS_FILES |
+    grep -Ev 'root|sudo' |
+    grep -v '{{ admin_user }}'
+)
+# The first line matches all the sudoers lines who let a user run ALL.
+# The second line remove sudo and root who must be able to target ALL.
+# The third line is an exception. Currently, admin user can run ALL.
+as "SEAPATH-00154 - no user can run all commands as root" \
+    cukinia_test -n $USER_ACCESS_ALL
+
 CMD_WILDCARD=$(
   grep -h -v '^#' $SUDOERS_FILES |
   grep '.*\*$'
