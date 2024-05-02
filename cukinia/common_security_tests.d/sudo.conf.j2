@@ -3,28 +3,28 @@
 
 cukinia_log "$(_colorize yellow "--- check sudo configuration ---")"
 SUDO_BIN="/usr/bin/sudo"
-as "SEAPATH-00103 - $SUDO_BIN exists" cukinia_test -f "$SUDO_BIN"
-as "SEAPATH-00104 - $SUDO_BIN belongs to group privileged" cukinia_test $(stat -c %G $SUDO_BIN) == "privileged"
-as "SEAPATH-00105 - $SUDO_BIN has permissions 4750" cukinia_test $(stat -c %A $SUDO_BIN) == "-rwsr-x---"
+id "SEAPATH-00103" as "$SUDO_BIN exists" cukinia_test -f "$SUDO_BIN"
+id "SEAPATH-00104" as "$SUDO_BIN belongs to group privileged" cukinia_test $(stat -c %G $SUDO_BIN) == "privileged"
+id "SEAPATH-00105" as "$SUDO_BIN has permissions 4750" cukinia_test $(stat -c %A $SUDO_BIN) == "-rwsr-x---"
 
 SUDOERS_FILES="$(find /etc/sudoers /etc/sudoers.d -type f -not -name README)"
 
-as "SEAPATH-00148 - sudoers files include directive noexec " \
+id "SEAPATH-00148" as "sudoers files include directive noexec " \
     cukinia_cmd grep -q "^Defaults.*noexec" $SUDOERS_FILES
-as "SEAPATH-00148 - sudoers files include directive requiretty " \
+id "SEAPATH-00148" as "sudoers files include directive requiretty " \
     cukinia_cmd grep -q "^Defaults.*requiretty" $SUDOERS_FILES
-as "SEAPATH-00148 - sudoers files include directive use_pty " \
+id "SEAPATH-00148" as "sudoers files include directive use_pty " \
     cukinia_cmd grep -q "^Defaults.*use_pty" $SUDOERS_FILES
-as "SEAPATH-00148 - sudoers files include directive umask=0027 " \
+id "SEAPATH-00148" as "sudoers files include directive umask=0027 " \
     cukinia_cmd grep -q "^Defaults.*umask=0027" $SUDOERS_FILES
-as "SEAPATH-00148 - sudoers files include directive ignore_dot " \
+id "SEAPATH-00148" as "sudoers files include directive ignore_dot " \
     cukinia_cmd grep -q "^Defaults.*ignore_dot" $SUDOERS_FILES
-as "SEAPATH-00148 - sudoers files include directive env_reset " \
+id "SEAPATH-00148" as "sudoers files include directive env_reset " \
     cukinia_cmd grep -q "^Defaults.*env_reset" $SUDOERS_FILES
 
-as "SEAPATH-00149 - sudo commands don't target privileged user " \
+id "SEAPATH-00149" as "sudo commands don't target privileged user " \
     not cukinia_cmd grep -q -E '.*\(root\).*' $SUDOERS_FILES
-as "SEAPATH-00150 - all commands require authentication" \
+id "SEAPATH-00150" as "all commands require authentication" \
     not cukinia_cmd grep -q '^(?!#|%privileged).*NOPASSWD' $SUDOERS_FILES
 
 CMD_WITH_EXEC=$(
@@ -32,10 +32,10 @@ CMD_WITH_EXEC=$(
     grep -Ev '{{ ansible_user }}|{{ admin_user }}'
 )
 # EXEC is mandatory for ansible. Currently admin user has all rigths
-as "SEAPATH-00152 - EXEC option is not used" \
+id "SEAPATH-00152" as "EXEC option is not used" \
     cukinia_test -n $CMD_WITH_EXEC
 
-as "SEAPATH-00153 - rules are not defined by negation" \
+id "SEAPATH-00153" as "rules are not defined by negation" \
     not cukinia_cmd grep -q "^[^#].*!\/" "$f" $SUDOERS_FILES
 
 CMD_WITHOUT_ARGS=$(
@@ -47,7 +47,7 @@ CMD_WITHOUT_ARGS=$(
 # The second line match the absolute path of the command (it begin with /)
 # and look for a space at the end of it (which means it has an argument).
 # The third line is an exception for ansible.
-as "SEAPATH-00154 - sudo commands always specify arguments" \
+id "SEAPATH-00154" as "sudo commands always specify arguments" \
     cukinia_test -n $CMD_WITHOUT_ARGS
 
 USER_ACCESS_ALL=$(
@@ -58,7 +58,7 @@ USER_ACCESS_ALL=$(
 # The first line matches all the sudoers lines who let a user run ALL.
 # The second line remove sudo and root who must be able to target ALL.
 # The third line is an exception. Currently, admin user can run ALL.
-as "SEAPATH-00154 - no user can run all commands as root" \
+id "SEAPATH-00154" as "no user can run all commands as root" \
     cukinia_test -n $USER_ACCESS_ALL
 
 CMD_WILDCARD=$(
@@ -66,10 +66,10 @@ CMD_WILDCARD=$(
   grep '.*\*$'
 )
 # The first grep get all lines that are not comments
-as "SEAPATH-00155 - sudo commands don't use wildcard * argument " \
+id "SEAPATH-00155" as "sudo commands don't use wildcard * argument " \
     cukinia_test -n $CMD_WILDCARD
 
 for file in $SUDOERS_FILES; do
-    as "SEAPATH-00156 - ${file} - $file is owned by root:root with 0440 permissions" \
+    id "SEAPATH-00156" as "${file} - $file is owned by root:root with 0440 permissions" \
         cukinia_test "$(stat -c "%a %U %G" $file)" == "440 root root"
 done
