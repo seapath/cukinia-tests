@@ -2,14 +2,14 @@ cukinia_log "$(_colorize yellow "--- check apt configuration ---")"
 
 
 {% if apt_repo is defined %}
-as "SEAPATH-00197 - Only wanted apt repositories configured: only use sources.list" \
+id "SEAPATH-00197" as "Only wanted apt repositories configured: only use sources.list" \
     cukinia_test -z "$(ls /etc/apt/sources.list.d/)"
 
-as "SEAPATH-00197 - Only wanted apt repositories configured: do not add other repositories" \
+id "SEAPATH-00197" as "Only wanted apt repositories configured: do not add other repositories" \
     cukinia_test $(cat /etc/apt/sources.list |wc -l) -eq {{ apt_repo | length }}
 
 {% for repo in apt_repo %}
-as "SEAPATH-00197 - Only official apt repositories configured: {{ repo }}" \
+id "SEAPATH-00197" as "Only official apt repositories configured: {{ repo }}" \
     cukinia_cmd  grep -Eq "^deb {{ repo }}$" /etc/apt/sources.list
 {% endfor %}
 {% endif %}
@@ -188,5 +188,5 @@ if [ "$UNRECOGNIZED_PACKAGES" != "" ]; then
     cukinia_log "$(_colorize red Unrecognized packages: $UNRECOGNIZED_PACKAGES)"
 fi
 
-as "SEAPATH-00198 - No unrecognized packages installed" \
+id "SEAPATH-00198" as "No unrecognized packages installed" \
     cukinia_test "$UNRECOGNIZED_PACKAGES" = ""
