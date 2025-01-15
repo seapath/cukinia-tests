@@ -2,77 +2,70 @@
 # SPDX-License-Identifier: Apache-2.0
 
 groups=" \
-    root \
-    daemon \
-    bin \
-    sys \
     adm \
-    tty \
+    {{ admin_user }} \
+    ansible \
+    audio \
+    backup \
+    bin \
+    cdrom \
+    _chrony \
+    crontab \
+    daemon \
+    Debian-snmp \
+    dialout \
+    dip \
     disk \
+    docker \
+    fax \
+    floppy \
+    games \
+{% if inventory_hostname in groups.get('cluster_machines', []) %}
+    ceph \
+    haclient \
+{% endif %}
+    input \
+    irc \
+    kmem \
+    kvm \
+    libvirt \
+    libvirt-qemu \
+    list \
     lp \
     mail \
-    news \
-    uucp \
     man \
-    proxy \
-    kmem \
-    dialout \
-    fax \
-    voice \
-    cdrom \
-    floppy \
-    tape \
-    sudo \
-    audio \
-    dip \
-    www-data \
-    backup \
-    operator \
-    list \
-    irc \
-    src \
-    shadow \
-    utmp \
-    video \
-    sasl \
-    plugdev \
-    staff \
-    games \
-    users \
+    messagebus \
+    netdev \
+    news \
     nogroup \
+    operator \
+    plugdev \
+    polkitd \
+    privileged \
+    proxy \
+    rdma \
+    render \
+    root \
+    sasl \
+    sgx \
+    shadow \
+    src \
+    _ssh \
+    staff \
+    sudo \
+    sys \
     systemd-journal \
     systemd-network \
     systemd-resolve \
-    input \
-    kvm \
-    render \
-    crontab \
-    netdev \
-    rdma \
-    ceph \
-{% if inventory_hostname in groups['cluster_machines'] %}
-    haclient \
-{% endif %}
-    messagebus \
+    tape \
+    tty \
+    users \
+    utmp \
+    uucp \
     uuidd \
-    docker \
-    Debian-snmp \
-    libvirt \
-    libvirt-qemu \
-    privileged \
-    ansible \
-    _chrony \
-    {{ admin_user }} \
-{% if ansible_distribution == 'Debian' and ansible_distribution_version | int < 12 %}
-    gnats \
-    systemd-timesync \
-    systemd-coredump \
-    ssh \
-{% else %}
-    _ssh \
-    sgx \
-    polkitd \
-{% endif %}
+    video \
+    voice \
+    www-data \
 "
 args="-v"
 for g in ${groups}; do
