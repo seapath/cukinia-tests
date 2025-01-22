@@ -50,7 +50,9 @@ groups=" \
     netdev \
     rdma \
     ceph \
+{% if inventory_hostname in groups['cluster_machines'] %}
     haclient \
+{% endif %}
     messagebus \
     uuidd \
     docker \
