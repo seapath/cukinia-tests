@@ -23,7 +23,9 @@ passwd=" \
     systemd-network \
     systemd-resolve \
     ceph \
+{% if inventory_hostname in groups['cluster_machines'] %}
     hacluster \
+{% endif %}
     messagebus \
     uuidd \
     sshd \
