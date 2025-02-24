@@ -22,8 +22,8 @@ passwd=" \
     _apt \
     systemd-network \
     systemd-resolve \
+{% if inventory_hostname in groups.get('cluster_machines', []) %}
     ceph \
-{% if inventory_hostname in groups['cluster_machines'] %}
     hacluster \
 {% endif %}
     messagebus \
