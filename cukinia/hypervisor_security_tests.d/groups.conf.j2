@@ -49,8 +49,8 @@ groups=" \
     crontab \
     netdev \
     rdma \
+{% if inventory_hostname in groups.get('cluster_machines', []) %}
     ceph \
-{% if inventory_hostname in groups['cluster_machines'] %}
     haclient \
 {% endif %}
     messagebus \
